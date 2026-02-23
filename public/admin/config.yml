@@ -45,6 +45,8 @@ collections:
     folder: "src/content/programs"
     create: true
     slug: "{{slug}}"
+    extension: "json"
+    format: "json"   
     fields:
       - {label: "Nama Program", name: "title", widget: "string"}
       - {label: "Gambar Thumbnail", name: "thumbnail", widget: "image"}
