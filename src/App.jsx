@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Leaf, Droplets, Users, Globe, Menu, X, ChevronRight, Sprout, Shield, MapPin, Mail, Phone } from "lucide-react";
 
-// Data Default / Fallback (Mencegah layar kosong sebelum CMS diisi)
+// Data Default / Fallback
 const defaultHome = {
   hero_title: "Membangun Sabuk Hijau Pesisir Nusantara",
   hero_description: "Kami memulihkan ekosistem mangrove di seluruh garis pantai Indonesia untuk melindungi daratan, menyejahterakan masyarakat pesisir, dan melawan perubahan iklim.",
@@ -33,17 +33,42 @@ export default function App() {
   const [programs, setPrograms] = useState(defaultPrograms);
 
   useEffect(() => {
-    // Kompilasi disesuaikan agar kode berjalan lancar
-    setHomeData(defaultHome);
-    setAboutData(defaultAbout);
-    setPrograms(defaultPrograms);
+    // 1. Ambil data Beranda dari folder public hasil simpanan CMS
+    fetch("/content/home.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("File home.json belum ada");
+        return res.json();
+      })
+      .then((data) => setHomeData({ ...defaultHome, ...data }))
+      .catch((err) => console.log("Info:", err.message));
+
+    // 2. Ambil data Tentang Kami dari folder public
+    fetch("/content/about.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("File about.json belum ada");
+        return res.json();
+      })
+      .then((data) => setAboutData({ ...defaultAbout, ...data }))
+      .catch((err) => console.log("Info:", err.message));
+
+    // 3. Ambil data Program Kerja dari folder public
+    fetch("/content/programs.json")
+      .then((res) => {
+        if (!res.ok) throw new Error("File programs.json belum ada");
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.items && data.items.length > 0) {
+          setPrograms(data.items);
+        }
+      })
+      .catch((err) => console.log("Info:", err.message));
   }, []);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
-      {/* Navbar */}
       <nav className="fixed w-full bg-white/90 backdrop-blur-md z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
@@ -53,7 +78,6 @@ export default function App() {
                 Bakau<span className="text-teal-600">Nusantara</span>
               </span>
             </div>
-
             <div className="hidden md:flex space-x-8 items-center">
               <a href="#beranda" className="text-slate-600 hover:text-green-600 font-medium transition-colors">
                 Beranda
@@ -66,7 +90,6 @@ export default function App() {
               </a>
               <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-lg">Dukung Kami</button>
             </div>
-
             <div className="md:hidden flex items-center">
               <button onClick={toggleMenu} className="text-slate-600 hover:text-green-600 focus:outline-none">
                 {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
@@ -76,13 +99,11 @@ export default function App() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section id="beranda" className="relative pt-20">
         <div className="absolute inset-0 z-0 h-[600px] lg:h-[700px]">
           <img src={homeData.hero_bg || defaultHome.hero_bg} alt="Hutan Bakau Indonesia" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-teal-900/90 to-green-900/70 mix-blend-multiply"></div>
         </div>
-
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[600px] lg:h-[700px] flex items-center">
           <div className="max-w-2xl text-white">
             <span className="inline-block py-1 px-3 rounded-full bg-green-500/20 border border-green-400/30 text-green-100 text-sm font-semibold mb-6 backdrop-blur-sm">Inisiatif Hijau Indonesia</span>
@@ -97,7 +118,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* Stats Section */}
       <section className="relative z-20 -mt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-xl p-8 lg:p-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="flex flex-col items-center text-center">
@@ -131,7 +151,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* About Section */}
       <section id="tentang" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -139,28 +158,24 @@ export default function App() {
               <div className="absolute -inset-4 bg-green-200/50 rounded-3xl transform -rotate-3 z-0"></div>
               <img src={aboutData.image || defaultAbout.image} alt="Akar Pohon Bakau yang Kuat" className="relative z-10 rounded-2xl shadow-xl w-full object-cover h-[500px]" />
             </div>
-
             <div className="order-1 lg:order-2">
               <div className="flex items-center gap-3 mb-4">
                 <span className="h-px w-12 bg-green-500"></span>
                 <span className="text-green-600 font-semibold uppercase tracking-wider text-sm">Tentang Kami</span>
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-6">{aboutData.title}</h2>
-
               <div className="text-slate-600 text-lg mb-8 leading-relaxed whitespace-pre-wrap">{aboutData.main_content}</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Programs Section */}
       <section id="program" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-4">Fokus Program Kami</h2>
             <p className="text-lg text-slate-600">Pendekatan holistik kami tidak hanya berhenti pada penanaman, melainkan memastikan ekosistem dan masyarakat dapat bertumbuh bersama.</p>
           </div>
-
           <div className="grid md:grid-cols-3 gap-8">
             {programs.map((program, index) => (
               <div key={index} className="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all group flex flex-col">
@@ -181,7 +196,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-slate-900 text-slate-300 py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <div className="flex justify-center items-center gap-2 mb-6">

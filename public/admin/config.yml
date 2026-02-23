@@ -1,69 +1,51 @@
 backend:
-  # Menggunakan Git Gateway yang terhubung dengan Netlify Identity
   name: git-gateway
-  branch: main # Branch repositori tempat CMS akan melakukan push
+  branch: main 
 
-# Konfigurasi media
-media_folder: "public/images/uploads" # Folder penyimpanan gambar di repositori
-public_folder: "/images/uploads"      # Path publik untuk mengakses gambar di website
+media_folder: "public/images/uploads" 
+public_folder: "/images/uploads"      
 
-# Konfigurasi Publikasi
-publish_mode: editorial_workflow # Memungkinkan draft dan review sebelum tayang
+publish_mode: editorial_workflow 
 
-# Konfigurasi Editor
 editor:
-  preview: false # Mematikan panel preview di sebelah kanan karena kita menggunakan React SPA murni
+  preview: false 
 
-# Koleksi Konten
 collections:
-  # 1. Koleksi untuk Halaman Statis (Beranda, Tentang Kami, dll)
   - name: "pages"
     label: "Halaman Website"
     description: "Atur konten untuk halaman-halaman utama website"
     files:
-      - file: "src/content/pages/home.json"
+      - file: "public/content/home.json"
         label: "Beranda"
         name: "home"
         fields:
           - {label: "Judul Hero", name: "hero_title", widget: "string"}
           - {label: "Deskripsi Hero", name: "hero_description", widget: "text"}
-          - {label: "Gambar Latar Belakang Hero", name: "hero_bg", widget: "image"}
-          - {label: "Jumlah Pohon Ditanam", name: "stat_trees", widget: "number"}
-          - {label: "Jumlah Relawan", name: "stat_volunteers", widget: "number"}
+          - {label: "Gambar Latar Belakang Hero", name: "hero_bg", widget: "image", required: false}
+          - {label: "Jumlah Pohon Ditanam", name: "stat_trees", widget: "string"}
+          - {label: "Jumlah Relawan", name: "stat_volunteers", widget: "string"}
           
-      - file: "src/content/pages/about.json"
+      - file: "public/content/about.json"
         label: "Tentang Kami"
         name: "about"
         fields:
           - {label: "Judul Bagian", name: "title", widget: "string"}
-          - {label: "Gambar Ilustrasi", name: "image", widget: "image"}
-          - {label: "Paragraf Utama", name: "main_content", widget: "markdown"}
+          - {label: "Gambar Ilustrasi", name: "image", widget: "image", required: false}
+          - {label: "Paragraf Utama", name: "main_content", widget: "text"}
 
-  # 2. Koleksi untuk Daftar Program Reboisasi
-  - name: "programs"
+  - name: "programs_collection"
     label: "Program Kerja"
-    folder: "src/content/programs"
-    create: true
-    slug: "{{slug}}"
-    extension: "json"
-    format: "json"   
-    fields:
-      - {label: "Nama Program", name: "title", widget: "string"}
-      - {label: "Gambar Thumbnail", name: "thumbnail", widget: "image"}
-      - {label: "Ringkasan Singkat", name: "summary", widget: "text", hint: "Tampil di halaman beranda"}
-      - {label: "Deskripsi Lengkap", name: "body", widget: "markdown"}
-      - {label: "Lokasi Target", name: "location", widget: "string"}
-      - {label: "Status Program", name: "status", widget: "select", options: ["Berjalan", "Selesai", "Perencanaan"]}
-
-  # 3. Koleksi Artikel/Blog (Opsional)
-  - name: "blog"
-    label: "Artikel & Berita"
-    folder: "src/content/blog"
-    create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    fields:
-      - {label: "Judul Artikel", name: "title", widget: "string"}
-      - {label: "Tanggal Publikasi", name: "date", widget: "datetime"}
-      - {label: "Gambar Sampul", name: "cover", widget: "image", required: false}
-      - {label: "Penulis", name: "author", widget: "string"}
-      - {label: "Konten Artikel", name: "body", widget: "markdown"}
+    files:
+      - file: "public/content/programs.json"
+        label: "Daftar Program"
+        name: "programs"
+        fields:
+          - name: "items"
+            label: "Daftar Program Kerja"
+            widget: "list"
+            fields:
+              - {label: "Nama Program", name: "title", widget: "string"}
+              - {label: "Gambar Thumbnail", name: "thumbnail", widget: "image", required: false}
+              - {label: "Ringkasan Singkat", name: "summary", widget: "text", hint: "Tampil di halaman beranda"}
+              - {label: "Lokasi Target", name: "location", widget: "string"}
+              - {label: "Status Program", name: "status", widget: "select", options: ["Berjalan", "Selesai", "Perencanaan"]}
