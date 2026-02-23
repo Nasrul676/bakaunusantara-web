@@ -1,14 +1,18 @@
 backend:
-  # Ubah 'git-gateway' ke 'github' jika tidak menggunakan Netlify Identity
+  # Menggunakan Git Gateway yang terhubung dengan Netlify Identity
   name: git-gateway
   branch: main # Branch repositori tempat CMS akan melakukan push
 
 # Konfigurasi media
 media_folder: "public/images/uploads" # Folder penyimpanan gambar di repositori
-public_folder: "/images/uploads"      # Path publik untuk mengakses gambar
+public_folder: "/images/uploads"      # Path publik untuk mengakses gambar di website
 
 # Konfigurasi Publikasi
 publish_mode: editorial_workflow # Memungkinkan draft dan review sebelum tayang
+
+# Konfigurasi Editor
+editor:
+  preview: false # Mematikan panel preview di sebelah kanan karena kita menggunakan React SPA murni
 
 # Koleksi Konten
 collections:
